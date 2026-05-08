@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection AI | Security Suite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Phishing Guard AI</h1>
+        <p class="subtitle">Next-generation URL analysis using machine learning.</p>
+    </div>
+
+    <form action="/predict" method="post">
+        <div class="form-group">
+            <label for="feature1">URL Structure Analysis (Length)</label>
+            <input type="number" id="feature1" name="feature1" placeholder="e.g. 45" required min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="feature2">Security Protocol (HTTPS)</label>
+            <input type="number" id="feature2" name="feature2" placeholder="1 for Yes, 0 for No" required min="0" max="1">
+        </div>
+
+        <button type="submit">Analyze URL</button>
+    </form>
+
+    {% if prediction_text %}
+    <div class="result-container show result-{{ status }}">
+        <div class="icon">
+            {% if status == 'safe' %}
+            ✅
+            {% elif status == 'phishing' %}
+            🚨
+            {% else %}
+            ⚠️
+            {% endif %}
+        </div>
+        {{ prediction_text }}
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
