@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 import pickle
 import os
 
@@ -23,7 +24,11 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
+# Check accuracy
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Model trained successfully. Accuracy: {accuracy * 100:.2f}%")
+
 # Save model
 pickle.dump(model, open("model.pkl", "wb"))
-
-print("Model trained successfully and saved as model.pkl")
+print("Model saved as model.pkl")

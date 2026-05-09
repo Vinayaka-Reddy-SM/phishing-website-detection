@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phishing Detection AI | Security Suite</title>
+    <title>Phishing Guard AI | Smart Link Protection</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,38 +14,82 @@
 <div class="container">
     <div class="header">
         <h1>Phishing Guard AI</h1>
-        <p class="subtitle">Next-generation URL analysis using machine learning.</p>
+        <p>Advanced neural-link analysis for maximum browsing safety.</p>
     </div>
 
-    <form action="/predict" method="post">
-        <div class="form-group">
-            <label for="feature1">URL Structure Analysis (Length)</label>
-            <input type="number" id="feature1" name="feature1" placeholder="e.g. 45" required min="1">
-        </div>
+    <div class="main-card">
+        <form action="/predict" method="post">
+            <div class="input-group">
+                <input type="text" name="url" placeholder="Paste URL here (e.g., https://example.com)" required value="{{ url if url else '' }}">
+            </div>
+            <button type="submit" id="analyzeBtn">Analyze Security Profile</button>
+        </form>
 
-        <div class="form-group">
-            <label for="feature2">Security Protocol (HTTPS)</label>
-            <input type="number" id="feature2" name="feature2" placeholder="1 for Yes, 0 for No" required min="0" max="1">
-        </div>
+        {% if prediction_text %}
+        <div class="result-section">
+            <div class="badge {{ 'safe-badge' if status == 'safe' else 'phishing-badge' }}">
+                {{ 'VERIFIED SAFE' if status == 'safe' else 'THREAT DETECTED' }}
+            </div>
+            
+            <h2 class="result-title">{{ prediction_text }}</h2>
+            <p class="result-desc">{{ description }}</p>
 
-        <button type="submit">Analyze URL</button>
-    </form>
-
-    {% if prediction_text %}
-    <div class="result-container show result-{{ status }}">
-        <div class="icon">
-            {% if status == 'safe' %}
-            ✅
-            {% elif status == 'phishing' %}
-            🚨
-            {% else %}
-            ⚠️
-            {% endif %}
+            <div class="features-grid">
+                <div class="feature-tag">
+                    URL Length
+                    <span class="feature-value">{{ features[0] }} chars</span>
+                </div>
+                <div class="feature-tag">
+                    Security
+                    <span class="feature-value">{{ 'HTTPS Active' if features[1] == 1 else 'No Encryption' }}</span>
+                </div>
+                <div class="feature-tag">
+                    Symbols
+                    <span class="feature-value">{{ 'Suspicious' if features[2] == 1 else 'Standard' }}</span>
+                </div>
+                <div class="feature-tag">
+                    Complexity
+                    <span class="feature-value">{{ features[3] }} Subdomains</span>
+                </div>
+                <div class="feature-tag">
+                    Redirects
+                    <span class="feature-value">{{ 'Obfuscated' if features[4] == 1 else 'Direct' }}</span>
+                </div>
+                <div class="feature-tag">
+                    Structure
+                    <span class="feature-value">{{ features[5] }} Digits</span>
+                </div>
+            </div>
         </div>
-        {{ prediction_text }}
+        {% endif %}
+
+        {% if history %}
+        <div class="history-section">
+            <h3>Recent Scans</h3>
+            <div class="history-list">
+                {% for scan in history %}
+                <div class="history-item">
+                    <div class="history-info">
+                        <span class="history-url">{{ scan[0][:40] }}{{ '...' if scan[0]|length > 40 }}</span>
+                        <span class="history-time">{{ scan[3] }}</span>
+                    </div>
+                    <span class="history-status status-{{ scan[2] }}">{{ scan[1] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = document.getElementById('analyzeBtn');
+        btn.innerText = 'Initializing Neural Scan...';
+        btn.style.opacity = '0.7';
+        btn.style.cursor = 'wait';
+    });
+</script>
 
 </body>
 </html>
